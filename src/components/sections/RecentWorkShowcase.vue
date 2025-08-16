@@ -1,34 +1,32 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-/* --------- DATA (replace with your own later) --------- */
-// Recent work cards
+/* ----------------- Sample Data (replace when ready) ----------------- */
 const works = ref([
   {
-    title: 'Glamgrl',
-    tag: 'E-commerce Website',
-    cover: 'https://placehold.co/960x600/0b2230/f8fafc?text=GLAMGRL+CASE',
-    logo: 'https://placehold.co/140x48/0b2230/98f6fd?text=GLAMGRL',
-    href: '#'
+    title: 'Dhectar',
+    tag: 'Android & IOS (Flutter)',
+    cover: 'https://i.ibb.co.com/h1YWxR9z/e.png',
+    logo: 'https://i.ibb.co.com/4QXVBsw/logo.jpg',
+    href: '#',
   },
   {
-    title: 'Fantasy Kingdom',
-    tag: 'Android App',
-    cover: 'https://placehold.co/960x600/0b2230/f0fdf9?text=FANTASY+KINGDOM',
-    logo: 'https://placehold.co/140x48/0b2230/f0fdf9?text=FK',
-    href: '#'
+    title: 'Jahkno Radio',
+    tag: 'Android & IOS (Flutter)',
+    cover: 'https://i.ibb.co.com/C5b9jNRB/Scene-7.png',
+    logo: 'https://i.ibb.co.com/TxcX8cZZ/logo.jpg',
+    href: '#',
   },
   {
     title: 'Goldx',
     tag: 'Fintech Android App',
     cover: 'https://placehold.co/960x600/0b2230/fde68a?text=GOLDX+FINTECH',
     logo: 'https://placehold.co/140x48/0b2230/fde68a?text=GOLDX',
-    href: '#'
+    href: '#',
   },
   // add more…
 ])
 
-// Logos for the three lanes
 const brandLogos = [
   'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+1',
   'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+2',
@@ -53,39 +51,49 @@ const customerLogos = [
   'https://placehold.co/180x72/ffe4e6/0b2230?text=Customer+6',
 ]
 
-/* --------- TABS --------- */
+/* ----------------- Tabs ----------------- */
 const tabs = ['work', 'brands', 'partners', 'customers']
 const active = ref('work')
 
-/* --------- SLIDER (recent work) --------- */
+const currentLogos = computed(() => {
+  if (active.value === 'brands') return brandLogos
+  if (active.value === 'partners') return partnerLogos
+  if (active.value === 'customers') return customerLogos
+  return []
+})
+// duplicated for seamless marquee scroll
+const marqueeLogos = computed(() => [...currentLogos.value, ...currentLogos.value])
+
+/* ----------------- Slider ----------------- */
+const idx = ref(0)
 const per = ref(3)
-function updatePer() {
-  if (window.innerWidth < 640) per.value = 1
-  else if (window.innerWidth < 1024) per.value = 2
-  else per.value = 3
+
+let resizeRaf = 0
+const updatePer = () => {
+  cancelAnimationFrame(resizeRaf)
+  resizeRaf = requestAnimationFrame(() => {
+    if (window.innerWidth < 640) per.value = 1
+    else if (window.innerWidth < 1024) per.value = 2
+    else per.value = 3
+  })
 }
-onMounted(() => { updatePer(); window.addEventListener('resize', updatePer) })
-onUnmounted(() => window.removeEventListener('resize', updatePer))
 
 const slides = computed(() => {
-  const out = []
+  const pages = []
   for (let i = 0; i < works.value.length; i += per.value) {
-    out.push(works.value.slice(i, i + per.value))
+    pages.push(works.value.slice(i, i + per.value))
   }
-  return out.length ? out : [[]]
+  return pages.length ? pages : [[]]
 })
 
-const idx = ref(0)
-function next() { idx.value = (idx.value + 1) % slides.value.length }
-function prev() { idx.value = (idx.value - 1 + slides.value.length) % slides.value.length }
+function next()  { idx.value = (idx.value + 1) % slides.value.length }
+function prev()  { idx.value = (idx.value - 1 + slides.value.length) % slides.value.length }
 
-let timer
+let timer = null
 function start() { stop(); timer = setInterval(next, 4000) }
-function stop() { if (timer) clearInterval(timer) }
-onMounted(start)
-onUnmounted(stop)
+function stop()  { if (timer) { clearInterval(timer); timer = null } }
 
-/* Tilt interaction for cards */
+/* ----------------- Tilt interaction ----------------- */
 function tilt(e) {
   const el = e.currentTarget
   const r = el.getBoundingClientRect()
@@ -96,7 +104,23 @@ function tilt(e) {
   el.style.setProperty('--rx', `${rx}deg`)
   el.style.setProperty('--ry', `${ry}deg`)
 }
-function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0deg'); el.style.setProperty('--ry','0deg') }
+function untilt(e) {
+  const el = e.currentTarget
+  el.style.setProperty('--rx', '0deg')
+  el.style.setProperty('--ry', '0deg')
+}
+
+/* ----------------- Lifecycles ----------------- */
+onMounted(() => {
+  updatePer()
+  window.addEventListener('resize', updatePer, { passive: true })
+  start()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', updatePer)
+  stop()
+  cancelAnimationFrame(resizeRaf)
+})
 </script>
 
 <template>
@@ -133,17 +157,28 @@ function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0d
       <!-- Work slider -->
       <div v-show="active==='work'" class="mt-10 relative group" @mouseenter="stop" @mouseleave="start">
         <div class="overflow-hidden rounded-3xl">
-          <div class="flex transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)]"
-               :style="{ transform: `translateX(-${idx * 100}%)` }">
-            <div v-for="(slide, s) in slides" :key="s" class="w-full shrink-0 px-1 sm:px-2">
+          <div
+            class="flex will-change-transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)]"
+            :style="{ transform: `translateX(-${idx * 100}%)` }"
+          >
+            <div v-for="(slide, s) in slides" :key="'slide-'+s" class="w-full shrink-0 px-1 sm:px-2">
               <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                <a v-for="(w, i) in slide" :key="w.title + i" :href="w.href"
-                   class="group/card relative rounded-2xl bg-[#0b2226] border border-white/10 overflow-hidden
-                          shadow-[0_12px_40px_-12px_rgba(0,0,0,.6)] will-change-transform"
-                   style="transform: perspective(900px) rotateX(var(--rx,0)) rotateY(var(--ry,0));"
-                   @mousemove="tilt" @mouseleave="untilt">
+                <a
+                  v-for="(w, i) in slide"
+                  :key="w.title + i"
+                  :href="w.href"
+                  class="group/card relative rounded-2xl bg-[#0b2226] border border-white/10 overflow-hidden
+                         shadow-[0_12px_40px_-12px_rgba(0,0,0,.6)] will-change-transform"
+                  style="transform: perspective(900px) rotateX(var(--rx,0)) rotateY(var(--ry,0));"
+                  @mousemove="tilt"
+                  @mouseleave="untilt"
+                >
                   <div class="aspect-[16/9] overflow-hidden">
-                    <img :src="w.cover" alt="" class="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-[1.04]" />
+                    <img
+                      :src="w.cover"
+                      alt=""
+                      class="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-[1.04]"
+                    />
                     <div class="absolute left-4 bottom-4 bg-black/50 backdrop-blur px-3 py-1.5 rounded-lg flex items-center gap-2">
                       <img :src="w.logo" alt="" class="h-5" />
                       <span class="text-xs text-gray-100">{{ w.tag }}</span>
@@ -153,7 +188,11 @@ function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0d
                     <h3 class="text-2xl font-bold text-cyan-300 group-hover/card:text-cyan-200 transition">{{ w.title }}</h3>
                     <p class="mt-1 text-gray-300">Case study →</p>
                   </div>
-                  <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-emerald-400/0 opacity-0 group-hover/card:opacity-100 blur-xl transition"></div>
+                  <div
+                    class="pointer-events-none absolute -inset-1 rounded-2xl bg-gradient-to-r
+                           from-cyan-500/0 via-cyan-500/20 to-emerald-400/0 opacity-0
+                           group-hover/card:opacity-100 blur-xl transition"
+                  />
                 </a>
               </div>
             </div>
@@ -161,12 +200,18 @@ function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0d
         </div>
 
         <!-- Arrows -->
-        <button class="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 h-11 w-11 items-center justify-center
-                       rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition shadow-lg"
-                @click="prev" aria-label="Previous">‹</button>
-        <button class="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 items-center justify-center
-                       rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition shadow-lg"
-                @click="next" aria-label="Next">›</button>
+        <button
+          class="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 h-11 w-11 items-center justify-center
+                 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition shadow-lg"
+          @click="prev"
+          aria-label="Previous"
+        >‹</button>
+        <button
+          class="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 items-center justify-center
+                 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition shadow-lg"
+          @click="next"
+          aria-label="Next"
+        >›</button>
       </div>
 
       <!-- Logos marquee -->
@@ -179,20 +224,13 @@ function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0d
           <!-- row 1 -->
           <div class="marquee">
             <div class="marquee-track">
-              <img v-for="(src, i) in (active==='brands' ? brandLogos : active==='partners' ? partnerLogos : customerLogos)"
-                   :key="'m1'+i" :src="src" class="logo" alt="" />
-              <!-- duplicate for seamless loop -->
-              <img v-for="(src, i) in (active==='brands' ? brandLogos : active==='partners' ? partnerLogos : customerLogos)"
-                   :key="'m1b'+i" :src="src" class="logo" alt="" />
+              <img v-for="(src, i) in marqueeLogos" :key="'m1-'+i" :src="src" class="logo" alt="" />
             </div>
           </div>
           <!-- row 2 (reverse direction) -->
           <div class="marquee reverse mt-3">
             <div class="marquee-track">
-              <img v-for="(src, i) in (active==='brands' ? brandLogos : active==='partners' ? partnerLogos : customerLogos)"
-                   :key="'m2'+i" :src="src" class="logo" alt="" />
-              <img v-for="(src, i) in (active==='brands' ? brandLogos : active==='partners' ? partnerLogos : customerLogos)"
-                   :key="'m2b'+i" :src="src" class="logo" alt="" />
+              <img v-for="(src, i) in marqueeLogos" :key="'m2-'+i" :src="src" class="logo" alt="" />
             </div>
           </div>
         </div>
@@ -200,9 +238,12 @@ function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0d
 
       <!-- CTA -->
       <div class="mt-10 flex justify-center">
-        <a href="#projects" class="inline-flex items-center justify-center px-6 py-3 rounded-xl
+        <a
+          href="#projects"
+          class="inline-flex items-center justify-center px-6 py-3 rounded-xl
                  font-semibold text-[#052228] bg-cyan-400 hover:bg-cyan-300
-                 shadow-[0_18px_35px_-12px_rgba(34,211,238,.45)] transition">
+                 shadow-[0_18px_35px_-12px_rgba(34,211,238,.45)] transition"
+        >
           View All Case Studies
         </a>
       </div>
@@ -225,10 +266,8 @@ function untilt(e) { const el = e.currentTarget; el.style.setProperty('--rx','0d
   filter: grayscale(100%) opacity(80%);
   transition: filter .25s ease, transform .25s ease;
 }
-.logo:hover {
-  filter: grayscale(0%) opacity(100%);
-  transform: translateY(-2px);
-}
+.logo:hover { filter: grayscale(0%) opacity(100%); transform: translateY(-2px); }
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
