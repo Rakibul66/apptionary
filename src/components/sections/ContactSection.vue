@@ -109,7 +109,7 @@ ${form.message}`
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5 text-emerald-600">
                   <path fill="currentColor" d="M20.52 3.48A11.9 11.9 0 0 0 12.05 0 12 12 0 0 0 2.2 17.4L0 24l6.77-2.17A12 12 0 0 0 24 12a11.9 11.9 0 0 0-3.48-8.52ZM12 21.33a9.25 9.25 0 0 1-4.73-1.3l-.34-.2-4.02 1.29 1.32-3.88-.22-.36A9.34 9.34 0 1 1 21.33 12 9.33 9.33 0 0 1 12 21.33Zm5.34-7.08c-.3-.15-1.78-.88-2.06-.98s-.48-.15-.68.15-.78.98-.96 1.18-.36.22-.66.07a7.65 7.65 0 0 1-2.25-1.39 8.43 8.43 0 0 1-1.56-1.93c-.16-.3 0-.46.14-.61l.42-.48c.15-.15.22-.26.33-.44a.56.56 0 0 0 0-.53c-.07-.15-.62-1.64-.85-2.25s-.45-.52-.63-.53h-.54a1 1 0 0 0-.75.35 3.17 3.17 0 0 0-1 2.35 5.5 5.5 0 0 0 1.15 2.94 12.55 12.55 0 0 0 4.83 4.6 16.54 16.54 0 0 0 1.61.74 3.87 3.87 0 0 0 1.78.11 2.9 2.9 0 0 0 1.92-1.34 2.36 2.36 0 0 0 .16-1.34c-.07-.11-.26-.18-.56-.33Z"/>
                 </svg>
-                <span class="text-sm text-gray-600">WhatsApp</span>
+                <span class="text-sm text-gray-600"></span>
                 <span class="font-semibold text-gray-800 truncate">+8801784067744</span>
               </a>
               <!-- Email -->
@@ -119,7 +119,7 @@ ${form.message}`
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5 text-teal-600">
                   <path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v1.2l10 5.8 10-5.8V6a2 2 0 0 0-2-2Zm0 6.4-9.4 5.44a1 1 0 0 1-1.2 0L0 10.4V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-7.6Z"/>
                 </svg>
-                <span class="text-sm text-gray-600">Email</span>
+                <span class="text-sm text-gray-600"></span>
                 <span class="font-semibold text-gray-800 truncate">roxyhasan76@gmail.com</span>
               </a>
             </div>

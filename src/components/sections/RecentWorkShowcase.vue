@@ -4,10 +4,17 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 /* ----------------- Sample Data (replace when ready) ----------------- */
 const works = ref([
   {
-    title: 'Dhectar',
+    title: 'Life Mentor',
     tag: 'Android & IOS (Flutter)',
-    cover: 'https://i.ibb.co.com/h1YWxR9z/e.png',
-    logo: 'https://i.ibb.co.com/4QXVBsw/logo.jpg',
+    cover: 'https://raw.githubusercontent.com/Rakibul66/Recent-Project-Apk/refs/heads/main/life%20mentors.png',
+    logo: 'https://raw.githubusercontent.com/Rakibul66/life-mentor-pro/refs/heads/main/android/app/src/main/res/mipmap-hdpi/ic_launcher.png?token=GHSAT0AAAAAACXCQVTJQLZ6ITM5N42MKXZ62FFNCDQ',
+    href: 'https://play.google.com/store/apps/details?id=com.life.mentor&hl=en',
+  },
+    {
+    title: 'Wod Watch',
+    tag: 'Android & IOS (Flutter,Riverpod)',
+    cover: 'https://raw.githubusercontent.com/Rakibul66/Recent-Project-Apk/refs/heads/main/wod.png',
+    logo: 'https://raw.githubusercontent.com/Rakibul66/Recent-Project-Apk/refs/heads/main/WhatsApp%20Image%202025-08-13%20at%2020.49.05.jpeg',
     href: '#',
   },
   {
@@ -15,25 +22,46 @@ const works = ref([
     tag: 'Android & IOS (Flutter)',
     cover: 'https://i.ibb.co.com/C5b9jNRB/Scene-7.png',
     logo: 'https://i.ibb.co.com/TxcX8cZZ/logo.jpg',
-    href: '#',
+    href: 'https://apps.apple.com/us/app/jahkno-radio/id1580127743',
   },
   {
-    title: 'Goldx',
-    tag: 'Fintech Android App',
-    cover: 'https://placehold.co/960x600/0b2230/fde68a?text=GOLDX+FINTECH',
-    logo: 'https://placehold.co/140x48/0b2230/fde68a?text=GOLDX',
+    title: 'Switch FM ',
+    tag: 'IOS (SwiftUI)',
+    cover: 'https://raw.githubusercontent.com/Rakibul66/Recent-Project-Apk/refs/heads/main/switch.png',
+    logo: 'https://i.ibb.co.com/9H2tKZbk/SwitchFM.jpg',
     href: '#',
   },
-  // add more…
+   {
+    title: 'Dhectar',
+    tag: 'Android & IOS (Flutter)',
+    cover: 'https://i.ibb.co.com/h1YWxR9z/e.png',
+    logo: 'https://i.ibb.co.com/4QXVBsw/logo.jpg',
+    href: 'https://play.google.com/store/apps/details?id=com.dhectar.dab.dhectardab',
+  },
+  {
+    title: 'Radio Tube',
+    tag: 'Android(Kotlin)',
+    cover: 'https://raw.githubusercontent.com/Rakibul66/Recent-Project-Apk/refs/heads/main/Radio%20App%20Thumbnail_Apple.png',
+    logo: 'https://i.ibb.co.com/TxcX8cZZ/logo.jpg',
+    href: '#',
+  },
+    {
+    title: 'Hard Rock',
+    tag: 'Android(Kotlin)',
+    cover: 'https://raw.githubusercontent.com/Rakibul66/Recent-Project-Apk/refs/heads/main/Radio%20App%20Thumbnail_Apple_590_300.jpg',
+    logo: 'https://i.ibb.co.com/TxcX8cZZ/logo.jpg',
+    href: '#',
+  },
+  
+
 ])
 
 const brandLogos = [
-  'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+1',
-  'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+2',
-  'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+3',
-  'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+4',
-  'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+5',
-  'https://placehold.co/180x72/e5e7eb/0b2230?text=Brand+6',
+  'https://i.ibb.co.com/4QXVBsw/logo.jpg',
+  'https://i.ibb.co.com/TxcX8cZZ/logo.jpg',
+  'https://raw.githubusercontent.com/Rakibul66/cosmos-radio/refs/heads/main/assets/logo.jpg?token=GHSAT0AAAAAACXCQVTJVCMKBFRLKJJXF2462FETFNQ',
+  'https://i.ibb.co.com/9H2tKZbk/SwitchFM.jpg',
+
 ]
 const partnerLogos = [
   'https://placehold.co/180x72/dbeafe/0b2230?text=Partner+1',
@@ -52,8 +80,8 @@ const customerLogos = [
 ]
 
 /* ----------------- Tabs ----------------- */
-const tabs = ['work', 'brands', 'partners', 'customers']
-const active = ref('work')
+const tabs = ['client', 'brands', 'partners']
+const active = ref('client')
 
 const currentLogos = computed(() => {
   if (active.value === 'brands') return brandLogos
@@ -155,7 +183,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Work slider -->
-      <div v-show="active==='work'" class="mt-10 relative group" @mouseenter="stop" @mouseleave="start">
+      <div v-show="active==='client'" class="mt-10 relative group" @mouseenter="stop" @mouseleave="start">
         <div class="overflow-hidden rounded-3xl">
           <div
             class="flex will-change-transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)]"
@@ -215,7 +243,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Logos marquee -->
-      <div v-show="active!=='work'" class="mt-10">
+      <div v-show="active!=='client'" class="mt-10">
         <p class="text-gray-300 mb-4" v-if="active==='brands'">Trusted by these brands</p>
         <p class="text-gray-300 mb-4" v-else-if="active==='partners'">Built with great partners</p>
         <p class="text-gray-300 mb-4" v-else>Happy customers</p>
@@ -236,17 +264,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- CTA -->
-      <div class="mt-10 flex justify-center">
-        <a
-          href="#projects"
-          class="inline-flex items-center justify-center px-6 py-3 rounded-xl
-                 font-semibold text-[#052228] bg-cyan-400 hover:bg-cyan-300
-                 shadow-[0_18px_35px_-12px_rgba(34,211,238,.45)] transition"
-        >
-          View All Case Studies
-        </a>
-      </div>
+     
     </div>
   </section>
 </template>

@@ -14,6 +14,6 @@
 </template>
 
 <script setup>
-const owner = 'Mubeen UI Alam' // ← change if needed
+const owner = 'Md.Rakibul Hasan' // ← change if needed
 const year = new Date().getFullYear()
 </script>
